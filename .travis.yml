@@ -13,28 +13,31 @@ script:
 - echo $alpine_arm_sha
 - node_arm_sha=$(get_manifest_sha "treehouses/node:latest" "arm")
 - echo $node_arm_sha
-- flag_arm=$(is_base "treehouses/alpine@"$alpine_arm_sha "treehouses/node@"$node_arm_sha )
+- flag_arm=$(is_base "treehouses/alpine@"$alpine_arm_sha "treehouses/node@"$node_arm_sha
+  )
 - echo $flag_arm
 - alpine_amd64_sha=$(get_manifest_sha "treehouses/alpine:latest" "amd64")
 - echo $alpine_amd64_sha
 - node_amd64_sha=$(get_manifest_sha "treehouses/node:latest" "amd64")
 - echo $node_amd64_sha
-- flag_amd64=$(is_base "treehouses/alpine@"$alpine_amd64_sha "treehouses/node@"$node_amd64_sha )
+- flag_amd64=$(is_base "treehouses/alpine@"$alpine_amd64_sha "treehouses/node@"$node_amd64_sha
+  )
 - echo $flag_amd64
 - alpine_arm64_sha=$(get_manifest_sha "treehouses/alpine:latest" "arm64")
 - echo $alpine_arm64_sha
 - node_arm64_sha=$(get_manifest_sha "treehouses/node:latest" "arm64")
 - echo $node_arm64_sha
-- flag_arm64=$(is_base "treehouses/alpine@"$alpine_arm64_sha "treehouses/node@"$node_arm64_sha )
+- flag_arm64=$(is_base "treehouses/alpine@"$alpine_arm64_sha "treehouses/node@"$node_arm64_sha
+  )
 - echo $flag_arm64
-#- version2=$(image_version treehouses/nginx:latest)
-#- echo "treehouses version is $version2"
-- echo $DOCKERAPIKEY | docker login -u "sevenseas" --password-stdin
-- docker run --rm --privileged multiarch/qemu-user-static --reset -p yes   # for arm64
-- "./docker-build.sh treehouses/alpine:latest arm"      #Dockerfile base image is arm   arch
-- "./docker-build.sh treehouses/alpine:latest arm64"    #Dockerfile base image is arm64 arch
-- "./docker-build.sh treehouses/alpine:latest amd64"    #Dockerfile base image is amd64 arch
-- flag=$(compare "treehouses/alpine@"$alpine_arm_sha "treehouses/node@"$node_arm_sha "treehouses/alpine@"$alpine_amd64_sha "treehouses/node@"$node_amd64_sha "treehouses/alpine@"$alpine_arm64_sha "treehouses/node@"$node_arm64_sha)
+- echo $DOCKERAPIKEY | docker login -u "vmnet8" --password-stdin
+- docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+- "./docker-build.sh treehouses/alpine:latest arm"
+- "./docker-build.sh treehouses/alpine:latest arm64"
+- "./docker-build.sh treehouses/alpine:latest amd64"
+- flag=$(compare "treehouses/alpine@"$alpine_arm_sha "treehouses/node@"$node_arm_sha
+  "treehouses/alpine@"$alpine_amd64_sha "treehouses/node@"$node_amd64_sha "treehouses/alpine@"$alpine_arm64_sha
+  "treehouses/node@"$node_arm64_sha)
 - echo $flag
 before_deploy:
 - "./deploy.sh arm"
@@ -45,7 +48,8 @@ before_deploy:
 - tag1="latest"
 - tag2=$timetag
 - echo $tag2
-- create_manifest treehouses/node $tag1 $tag2 treehouses/node-tags:amd64 treehouses/node-tags:arm treehouses/node-tags:arm64
+- create_manifest treehouses/node $tag1 $tag2 treehouses/node-tags:amd64 treehouses/node-tags:arm
+  treehouses/node-tags:arm64
 - docker manifest inspect treehouses/node:$tag1
 - docker manifest inspect treehouses/node:$tag2
 deploy:
@@ -57,4 +61,4 @@ deploy:
     condition: "$flag = true"
 env:
   global:
-- secure: QDGtZWpbrrzktGhEXKf99VawpDFsdDbj/O+fmqFGAoQX64aMAUTfr30Z/HQIwS4VlTFY+QuqaC12mD5hPo078xSMfKHNx7PAsZKdfZXy5KRlXiZ3pP6ma99YC6GTIGU7ZgWEjsH5GBQk339ZsjgIC8df7MY17T2iP/BIeiWw0/joBd38OSBV2hrqqQLvordiwTDHaQ4fJ+nyobR1njo4pkOQU+cLRKgjBdChg/92fqgXUbt4orTUyQNR5BRt/vZyoBhNwCxDqVYvSIyT+0kgIjNOksTOplVM2cxbktUvM5+skjI9ZxVb1zFsGlqyCzFcTQfxRg1LVT/zWpl6a6Kf4DqqHhmZEgZnj4coVGwfr7IgZMQ2a79JyiK0I3YjrFulcFbln2UQ5gVCrAVSJOpOOo5P2xyp7ZfJ/6J95YM4Eyv3FCT3u+Gx7lyzQ8QmjnCkchn7G4zK5nZMd+KzcnBD6Ntfewoy6FXw7iZ/lFx16MlKblYjgfFAaHwapwFa3OUxo1HM70VFQLS8xvLrlnpJuPbwFQ4Wrlm18h8QQZesPy1pkZL3opPvC51HYKBkQvAUX/1GAaGt0EULhzFSad22aYSOV96FYcrb1dgAlvtMizgwZchH3txWZZiw5MvjTVaCYv6CI3b0Jy6AMYEbmQAEIC9mUCZiHMkhMEgV6Mk2zyA=
+    secure: f4MpGUGZesbsJnBivZu6h7FmGpTqaIv0DPhklFTAPAriUd3MKvIYXhCPPqUHbh4h/kskjosxnm1M5QIyq8Wo8DemQ8bK/OVQ8xb9R8Ej+tlxYuztfhltR/IHFJfejoi5PpjAiunfR3fgrRIJw5aB0j7KknXchTBLbci22c281yIh5gSUqjpYhevPNz/9k/dMFuZldVwD1rn/6qe+4Ls8Buv5XHaI6oJpW0EGLsaq22pqjE/IsH7kUOgfhqtdbm5PGS/tfWE3umQqNELCXPJHesx28HoXae1cBK36AnLE7uAo/R74hCCKQwYHf1OHTa1voMnAEKfovwEzxPmhNvifIDBLYWGUmbiGoR+C/zzbFTxDHBCqqb5GnOcq3tYfJdtMXcQ8Ip0emEd+MG46eNUl92XFsL9W44eyCKoBcytnMtXXncz0SyCVItau6abUsVVtL+fkm36uMMzrAF8v57y/hQurrYZDiEygwY1pG8g/LjblaA/aq0NZD54ujnJ5OlS2gu0LdDB0HBBCr3kTS2FKKe0aHA/aJTiD/JZIf+tlzkzR7hzlPxffZm74W2X8LcpMkXTmSSA8/HkzNt+xmddNRwabmrBNgeSsrdOjILYQ0Dx7ssZieEwdQuvClY3sKPnQ7a16Vj1QhGCQkK3ynLiqFduiRVbo2foeXtQ42rePiRw=
