@@ -16,5 +16,5 @@ get_manifest_sha (){
     done < "$2".txt
 
 }
-#get_manifest_sha $@
+get_manifest_sha $@
 
